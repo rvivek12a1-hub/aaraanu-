@@ -24,7 +24,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
+          java-version: '21'
 
       - name: Prepare Web Assets & Install Capacitor
         run: |
@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Aaraada-Imposter-App
-          path: android/app/build/outputs/apk/debug/app-debug.apk    
+          path: android/app/build/outputs/apk/debug/app-debug.apk
