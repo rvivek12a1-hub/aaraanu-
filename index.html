@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aaraada Imposter Ithil?</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #f59e0b;
+            --accent-hover: #d97706;
+            --danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 0.875rem;
+            margin-top: -0.75rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.875rem;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: #fff;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+        }
+
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .player-chip {
+            background: #334155;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .player-chip button {
+            background: none;
+            border: none;
+            color: var(--danger);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .era-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: #0f172a;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: #0f172a;
+            border: none;
+            padding: 0.85rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: #fff;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .card-box {
+            background: #0f172a;
+            border: 2px dashed var(--accent);
+            border-radius: 12px;
+            padding: 2rem 1rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            color: var(--text-sub);
+        }
+
+        .card-main {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .card-sub {
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .hidden-content {
+            filter: blur(8px);
+            user-select: none;
+            transition: filter 0.2s ease;
+        }
+
+        .revealed {
+            filter: blur(0);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Aaraada Imposter Ithil?</h1>
+        <div class="subtitle">Malayalam Movie Imposter Game</div>
+
+        <!-- SETUP SCREEN -->
+        <div id="setupScreen" class="screen active">
+            <div class="input-group">
+                <label>Add Players (Min 3)</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="playerNameInput" placeholder="Enter player name" style="flex: 1;">
+                    <button class="btn" id="addPlayerBtn" style="width: auto; padding: 0.75rem 1rem;">Add</button>
+                </div>
+            </div>
+
+            <div class="player-list" id="playerList"></div>
+
+            <div class="input-group">
+                <label>Select Era Categories</label>
+                <div class="era-checkboxes">
+                    <label class="checkbox-label"><input type="checkbox" class="era-cb" value="1" checked> Golden Era & Classics (1-33)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="era-cb" value="2" checked> Modern Classics / Y2K (34-62)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="era-cb" value="3" checked> Contemporary Blockbusters (63-89)</label>
+                    <label class="checkbox-label"><input type="checkbox" class="era-cb" value="4" checked> Extended Hits & Recent (90-100)</label>
+                </div>
+            </div>
+
+            <button class="btn" id="startGameBtn">Start Game</button>
+        </div>
+
+        <!-- PASS PHONE SCREEN -->
+        <div id="passScreen" class="screen">
+            <div class="card-box">
+                <div class="card-title">Pass phone to</div>
+                <div class="card-main" id="targetPlayerName">Player</div>
+            </div>
+            <button class="btn" id="readyBtn">I am <span id="readyPlayerName">Player</span></button>
+        </div>
+
+        <!-- REVEAL SCREEN -->
+        <div id="revealScreen" class="screen">
+            <div class="card-box">
+                <div class="card-title" id="roleTitle">Your Role</div>
+                <div id="secretContainer" class="hidden-content">
+                    <div class="card-main" id="secretMovie">MOVIE NAME</div>
+                    <div class="card-sub" id="secretHint">Hint: ???</div>
+                </div>
+            </div>
+            <button class="btn btn-secondary" id="holdRevealBtn">Hold to Reveal Secret</button>
+            <button class="btn" id="nextPlayerBtn" style="display: none;">Next Player</button>
+        </div>
+
+        <!-- DISCUSSION / SUMMARY SCREEN -->
+        <div id="discussionScreen" class="screen">
+            <div class="card-box">
+                <div class="card-main">Time to Discuss!</div>
+                <div class="card-sub">Ask questions, state hints, and catch the Imposter!</div>
+            </div>
+            <button class="btn btn-danger" id="revealImposterBtn">Reveal Imposter & Movie</button>
+            <div id="finalAnswers" style="display: none; text-align: center;" class="input-group">
+                <div style="font-size: 1.1rem; color: var(--accent);" id="imposterNameResult"></div>
+                <div style="font-size: 1.25rem; font-weight: bold;" id="movieResult"></div>
+                <div style="color: var(--text-sub);" id="hintResult"></div>
+            </div>
+            <button class="btn" id="playAgainBtn" style="display: none;">Play Next Round (Same Players)</button>
+            <button class="btn btn-secondary" id="resetAllBtn" style="display: none;">Reset All Settings</button>
+        </div>
+    </div>
+
+    <script>
+        const movieDatabase = [
+            // Era 1
+            { id: 1, era: 1, title: "Chemmeen", hint: "Seaside" },
+            { id: 2, era: 1, title: "My Dear Kuttichathan", hint: "Glass Bottle" },
+            { id: 3, era: 1, title: "Nadodikattu", hint: "Gulf Agent" },
+            { id: 4, era: 1, title: "Sanmanassullavarkku Samadhanama", hint: "Unwanted Guest" },
+            { id: 5, era: 1, title: "Chithram", hint: "Temporary Arrangement" },
+            { id: 6, era: 1, title: "Dasan and Vijayan (Akkare Akkare Akkare)", hint: "Forensic Sample" },
+            { id: 7, era: 1, title: "Oru Vadakkan Veeragatha", hint: "Weapon Defect" },
+            { id: 8, era: 1, title: "Vadakkunokkeyantram", hint: "Self Doubt" },
+            { id: 9, era: 1, title: "Varavelpu", hint: "New Enterprise" },
+            { id: 10, era: 1, title: "His Highness Abdullah", hint: "Palace Guest" },
+            { id: 11, era: 1, title: "In Harihar Nagar", hint: "Hidden Message" },
+            { id: 12, era: 1, title: "Godfather", hint: "Household Rule" },
+            { id: 13, era: 1, title: "Sandesham", hint: "House Divide" },
+            { id: 14, era: 1, title: "Yoddha", hint: "Sacred Guardian" },
+            { id: 15, era: 1, title: "Vietnam Colony", hint: "Secret Mission" },
+            { id: 16, era: 1, title: "Devasuram", hint: "Fallen Pride" },
+            { id: 17, era: 1, title: "Manichithrathazhu", hint: "Forbidden Room" },
+            { id: 18, era: 1, title: "Thenmavin Kombathu", hint: "Stray Journey" },
+            { id: 19, era: 1, title: "Pingami", hint: "Army Leave" },
+            { id: 20, era: 1, title: "Spadikam", hint: "Red Lorry" },
+            { id: 21, era: 1, title: "Hitler", hint: "Strict Guardian" },
+            { id: 22, era: 1, title: "Aram Thampuran", hint: "Lost Heritage" },
+            { id: 23, era: 1, title: "Punjabi House", hint: "Quiet Disguise" },
+            { id: 24, era: 1, title: "Friends", hint: "Misunderstanding" },
+            { id: 25, era: 1, title: "Thenkasipattanam", hint: "Local Partnership" },
+            { id: 26, era: 1, title: "Meesha Madhavan", hint: "Local Pursuit" },
+            { id: 27, era: 1, title: "Kalyanaraman", hint: "Event Chaos" },
+            { id: 28, era: 1, title: "Nandanam", hint: "Unspoken Wish" },
+            { id: 29, era: 1, title: "Yathrakarude Sradhakku", hint: "Shared Space" },
+            { id: 30, era: 1, title: "C.I.D. Moosa", hint: "Belt" },
+            { id: 31, era: 1, title: "Chronic Bachelor", hint: "Self Isolation" },
+            { id: 32, era: 1, title: "Kilichundan Mampazham", hint: "Secret Visitor" },
+            { id: 33, era: 1, title: "Meleparambil Aanveedu", hint: "Disguised Entry" },
+            // Era 2
+            { id: 34, era: 2, title: "Runway", hint: "Toll Gate" },
+            { id: 35, era: 2, title: "Rajamanikyam", hint: "Livestock" },
+            { id: 36, era: 2, title: "Chanthupottu", hint: "Seashore Upbringing" },
+            { id: 37, era: 2, title: "Classmates", hint: "Past Secrets" },
+            { id: 38, era: 2, title: "Rasathanthram", hint: "Concealed Past" },
+            { id: 39, era: 2, title: "Chotta Mumbai", hint: "Street Crew" },
+            { id: 40, era: 2, title: "Mayavi", hint: "Unsung Sacrifice" },
+            { id: 41, era: 2, title: "Hello", hint: "Unexpected Call" },
+            { id: 42, era: 2, title: "Arabikatha", hint: "Foreign Struggle" },
+            { id: 43, era: 2, title: "Pazhassi Raja", hint: "Jungle" },
+            { id: 44, era: 2, title: "Pranchiyettan & The Saint", hint: "Pursuit of Honor" },
+            { id: 45, era: 2, title: "Marykkundoru Kunjaadu", hint: "Unlikely Shield" },
+            { id: 46, era: 2, title: "Indian Rupee", hint: "Quick Wealth" },
+            { id: 47, era: 2, title: "Beautiful", hint: "Unlikely Bond" },
+            { id: 48, era: 2, title: "Thattathin Marayathu", hint: "Cultural Barrier" },
+            { id: 49, era: 2, title: "Ustad Hotel", hint: "Foreigner Beach" },
+            { id: 50, era: 2, title: "Run Baby Run", hint: "Media Exposure" },
+            { id: 51, era: 2, title: "Amen", hint: "Church Feast" },
+            { id: 52, era: 2, title: "Memories", hint: "Dark Pattern" },
+            { id: 53, era: 2, title: "Drishyam", hint: "Movie Ticket" },
+            { id: 54, era: 2, title: "North 24 Kaatham", hint: "Wipes" },
+            { id: 55, era: 2, title: "1983", hint: "Childhood Obsession" },
+            { id: 56, era: 2, title: "Bangalore Days", hint: "New Beginnings" },
+            { id: 57, era: 2, title: "Vikramadithyan", hint: "Parallel Paths" },
+            { id: 58, era: 2, title: "Vellimoonga", hint: "Local Ambition" },
+            { id: 59, era: 2, title: "Aadu", hint: "Unwanted Prize" },
+            { id: 60, era: 2, title: "Ennu Ninte Moideen", hint: "Silent Longing" },
+            { id: 61, era: 2, title: "Charlie", hint: "Unseen Figure" },
+            { id: 62, era: 2, title: "Jacobinte Swargarajyam", hint: "Sudden Loss" },
+            // Era 3
+            { id: 63, era: 3, title: "Angamaly Diaries", hint: "Regional Clash" },
+            { id: 64, era: 3, title: "Godha", hint: "Traditional Arena" },
+            { id: 65, era: 3, title: "Thondimuthalum Driksakshiyum", hint: "Station Desk" },
+            { id: 66, era: 3, title: "Sudani from Nigeria", hint: "Temporary Guest" },
+            { id: 67, era: 3, title: "Ee.Ma.Yau.", hint: "Final Rites" },
+            { id: 68, era: 3, title: "Njan Prakashan", hint: "Easy Route" },
+            { id: 69, era: 3, title: "Joseph", hint: "Unofficial Pursuit" },
+            { id: 70, era: 3, title: "Kumbalangi Nights", hint: "Backwater House" },
+            { id: 71, era: 3, title: "Lucifer", hint: "Party Succession" },
+            { id: 72, era: 3, title: "Undah", hint: "Remote Post" },
+            { id: 73, era: 3, title: "Virus", hint: "Crisis Response" },
+            { id: 74, era: 3, title: "Jallikattu", hint: "Uncontrolled Threat" },
+            { id: 75, era: 3, title: "Ayyappanum Koshiyum", hint: "Clash of Wills" },
+            { id: 76, era: 3, title: "Kettiyollaanu Ente Malakha", hint: "Estate Routine" },
+            { id: 77, era: 3, title: "C U Soon", hint: "Video Call" },
+            { id: 78, era: 3, title: "Kilometers and Kilometers", hint: "Distance Travel" },
+            { id: 79, era: 3, title: "The Great Indian Kitchen", hint: "Daily Routine" },
+            { id: 80, era: 3, title: "Joji", hint: "Quiet Ambition" },
+            { id: 81, era: 3, title: "Nayattu", hint: "Station Escape" },
+            { id: 82, era: 3, title: "Home", hint: "Smart Device" },
+            { id: 83, era: 3, title: "Minnal Murali", hint: "Unlikely Power" },
+            { id: 84, era: 3, title: "Bheeshma Parvam", hint: "Workshop" },
+            { id: 85, era: 3, title: "Thallumaala", hint: "Escalating Conflict" },
+            { id: 86, era: 3, title: "Jaya Jaya Jaya Jaya Hey", hint: "Poultry Farm" },
+            { id: 87, era: 3, title: "Romancham", hint: "Brass Coin" },
+            { id: 88, era: 3, title: "Iratta", hint: "Shared Image" },
+            { id: 89, era: 3, title: "2018", hint: "Collective Effort" },
+            // Era 4
+            { id: 90, era: 4, title: "Manjummel Boys", hint: "Red Van" },
+            { id: 91, era: 4, title: "Mazhavilkavadi", hint: "New Trade" },
+            { id: 92, era: 4, title: "Vellanakalude Nadu", hint: "System Delay" },
+            { id: 93, era: 4, title: "Mookkilla Rajyathu", hint: "Group Outing" },
+            { id: 94, era: 4, title: "Ponmuttayidunna Tharavu", hint: "Crafted Promise" },
+            { id: 95, era: 4, title: "Talayanamanthram", hint: "Living Beyond Means" },
+            { id: 96, era: 4, title: "Kottayam Kunjachan", hint: "Regional Power" },
+            { id: 97, era: 4, title: "Mannar Mathai Speaking", hint: "Staged Setup" },
+            { id: 98, era: 4, title: "Ayalum Njanum Thammil", hint: "Rural Clinic" },
+            { id: 99, era: 4, title: "Ohm Shanthi Oshaana", hint: "Bonsai Tree" },
+            { id: 100, era: 4, title: "Sookshmadarshini", hint: "Binoculars" }
+        ];
+
+        let players = [];
+        let currentRound = {
+            players: [],
+            imposterIndex: -1,
+            movie: null,
+            currentIndex: 0
+        };
+
+        // DOM elements
+        const setupScreen = document.getElementById('setupScreen');
+        const passScreen = document.getElementById('passScreen');
+        const revealScreen = document.getElementById('revealScreen');
+        const discussionScreen = document.getElementById('discussionScreen');
+
+        const playerNameInput = document.getElementById('playerNameInput');
+        const addPlayerBtn = document.getElementById('addPlayerBtn');
+        const playerList = document.getElementById('playerList');
+        const startGameBtn = document.getElementById('startGameBtn');
+
+        const targetPlayerName = document.getElementById('targetPlayerName');
+        const readyPlayerName = document.getElementById('readyPlayerName');
+        const readyBtn = document.getElementById('readyBtn');
+
+        const secretContainer = document.getElementById('secretContainer');
+        const secretMovie = document.getElementById('secretMovie');
+        const secretHint = document.getElementById('secretHint');
+        const roleTitle = document.getElementById('roleTitle');
+        const holdRevealBtn = document.getElementById('holdRevealBtn');
+        const nextPlayerBtn = document.getElementById('nextPlayerBtn');
+
+        const revealImposterBtn = document.getElementById('revealImposterBtn');
+        const finalAnswers = document.getElementById('finalAnswers');
+        const imposterNameResult = document.getElementById('imposterNameResult');
+        const movieResult = document.getElementById('movieResult');
+        const hintResult = document.getElementById('hintResult');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const resetAllBtn = document.getElementById('resetAllBtn');
+
+        // Add Player Logic
+        addPlayerBtn.addEventListener('click', () => {
+            const name = playerNameInput.value.trim();
+            if (name && !players.includes(name)) {
+                players.push(name);
+                playerNameInput.value = '';
+                renderPlayers();
+            }
+        });
+
+        function renderPlayers() {
+            playerList.innerHTML = '';
+            players.forEach((p, idx) => {
+                const chip = document.createElement('div');
+                chip.className = 'player-chip';
+                chip.innerHTML = `${p} <button onclick="removePlayer(${idx})">&times;</button>`;
+                playerList.appendChild(chip);
+            });
+        }
+
+        window.removePlayer = function(idx) {
+            players.splice(idx, 1);
+            renderPlayers();
+        };
+
+        // Screen Switcher
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            screen.classList.add('active');
+        }
+
+        // Start Game
+        startGameBtn.addEventListener('click', () => {
+            if (players.length < 3) {
+                alert("Add at least 3 players!");
+                return;
+            }
+
+            const selectedEras = Array.from(document.querySelectorAll('.era-cb:checked')).map(cb => parseInt(cb.value));
+            if (selectedEras.length === 0) {
+                alert("Select at least one Era!");
+                return;
+            }
+
+            const availableMovies = movieDatabase.filter(m => selectedEras.includes(m.era));
+            const selectedMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+
+            currentRound.players = [...players];
+            currentRound.imposterIndex = Math.floor(Math.random() * players.length);
+            currentRound.movie = selectedMovie;
+            currentRound.currentIndex = 0;
+
+            setupNextTurn();
+        });
+
+        function setupNextTurn() {
+            if (currentRound.currentIndex >= currentRound.players.length) {
+                showScreen(discussionScreen);
+                finalAnswers.style.display = 'none';
+                revealImposterBtn.style.display = 'block';
+                playAgainBtn.style.display = 'none';
+                resetAllBtn.style.display = 'none';
+                return;
+            }
+
+            const name = currentRound.players[currentRound.currentIndex];
+            targetPlayerName.innerText = name;
+            readyPlayerName.innerText = name;
+            showScreen(passScreen);
+        }
+
+        readyBtn.addEventListener('click', () => {
+            showScreen(revealScreen);
+            secretContainer.classList.remove('revealed');
+            nextPlayerBtn.style.display = 'none';
+            holdRevealBtn.style.display = 'block';
+
+            const isImposter = currentRound.currentIndex === currentRound.imposterIndex;
+            if (isImposter) {
+                roleTitle.innerText = "YOU ARE THE IMPOSTER";
+                secretMovie.innerText = "???";
+                secretHint.innerText = `Hint: ${currentRound.movie.hint}`;
+            } else {
+                roleTitle.innerText = "YOU ARE IN";
+                secretMovie.innerText = currentRound.movie.title;
+                secretHint.innerText = `Hint: ${currentRound.movie.hint}`;
+            }
+        });
+
+        // Press and Hold Reveal
+        const startReveal = () => secretContainer.classList.add('revealed');
+        const endReveal = () => {
+            secretContainer.classList.remove('revealed');
+            holdRevealBtn.style.display = 'none';
+            nextPlayerBtn.style.display = 'block';
+        };
+
+        holdRevealBtn.addEventListener('mousedown', startReveal);
+        holdRevealBtn.addEventListener('mouseup', endReveal);
+        holdRevealBtn.addEventListener('touchstart', (e) => { e.preventDefault(); startReveal(); });
+        holdRevealBtn.addEventListener('touchend', endReveal);
+
+        nextPlayerBtn.addEventListener('click', () => {
+            currentRound.currentIndex++;
+            setupNextTurn();
+        });
+
+        // Discussion & Final Reveal
+        revealImposterBtn.addEventListener('click', () => {
+            imposterNameResult.innerText = `Imposter: ${currentRound.players[currentRound.imposterIndex]}`;
+            movieResult.innerText = `Movie: ${currentRound.movie.title}`;
+            hintResult.innerText = `Hint: ${currentRound.movie.hint}`;
+            finalAnswers.style.display = 'block';
+            revealImposterBtn.style.display = 'none';
+            playAgainBtn.style.display = 'block';
+            resetAllBtn.style.display = 'block';
+        });
+
+        playAgainBtn.addEventListener('click', () => {
+            const selectedEras = Array.from(document.querySelectorAll('.era-cb:checked')).map(cb => parseInt(cb.value));
+            const availableMovies = movieDatabase.filter(m => selectedEras.includes(m.era));
+            currentRound.movie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+            currentRound.imposterIndex = Math.floor(Math.random() * players.length);
+            currentRound.currentIndex = 0;
+            setupNextTurn();
+        });
+
+        resetAllBtn.addEventListener('click', () => {
+            showScreen(setupScreen);
+        });
+    </script>
+</body>
+</html>
