@@ -26,12 +26,13 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install Capacitor & Android Tools
+      - name: Install Capacitor & Sync Web Assets
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
           npx cap init "Aaraada Imposter Ithil" "com.imposter.app" --web-dir .
           npx cap add android
+          npx cap sync android
 
       - name: Build Android APK
         run: |
